@@ -2,9 +2,10 @@ version: '3.8'
 
 services:
   api:
-    build: ./api
+    build:
+      context: ./api
     ports:
-      - 4001
-      - 9229 # Debugger
+      - 4000:4000
+      - 9229:9229 # Debugger
     volumes:
-      - .:/app
+      - ./api:/app
