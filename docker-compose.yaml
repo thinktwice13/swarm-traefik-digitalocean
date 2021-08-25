@@ -1,19 +1,76 @@
 version: '3.8'
 
+networks:
+  web:
+    # Override the network name.
+    # When not external, it makes docker use this name instead of automatically created project-scoped version
+    # We need the explicitliy named network for use with "traefik.docker.network" label
+    name: web-public
+    external: false # Do ot expect external web network in developmet
+
 services:
+  traefik:
+    image: traefik:v2.4
+    command:
+      - --log.level=DEBUG
+      - --log.format=common
+      - --providers.docker=true
+      - --providers.docker.swarmmode=false
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --api.insecure=true
+    ports:
+      - 80:80
+      - 8080:8080
+    labels:
+      - 'traefik.docker.network=web-public'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - web
+
   api:
     build:
-      context: ./api
-    ports:
-      - 4000:4000
-      - 9229:9229 # Debugger
+      context: api
+    networks:
+      - web
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev
+      DOMAIN: 'http://localhost'
     volumes:
       - ./api:/app
-
-  web:
-    build:
-      context: ./web
     ports:
-      - 3000:3000
+      - 9229 # Debugger
+    labels:
+      traefik.enable: 'true'
+      # Path will override other possible localhost/api endpoints
+      traefik.http.routers.node-api.rule: 'Host(`localhost`) && PathPrefix(`/api`)'
+      traefik.http.routers.node-api.entrypoints: web
+      traefik.docker.network: web-public
+      traefik.http.services.node-api.loadbalancer.server.port: 4000
+      # Define and apply prefix-strip middleware. Hitting localhost/api will return api service / home route
+      traefik.http.middlewares.node-api-stripprefix.stripprefix.prefixes: /api
+      traefik.http.routers.node-api.middlewares: node-api-stripprefix@docker
+    restart: unless-stopped
+    # Eable colorized logs
+    tty: true
+    stdin_open: false
+
+  webclient:
+    build:
+      context: web
     volumes:
       - ./web:/app
+    networks:
+      - web
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.webclient.rule: Host(`localhost`)
+      traefik.http.routers.webclient.entrypoints: web
+      traefik.docker.network: web-public
+      traefik.http.services.webclient.loadbalancer.server.port: 3000
+    restart: unless-stopped
+    # Eable colorized logs
+    tty: true
+    stdin_open: false
