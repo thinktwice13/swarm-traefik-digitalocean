@@ -1,6 +1,7 @@
 version: '3.8'
 
 networks:
+  internal:
   web:
     # Override the network name.
     # When not external, it makes docker use this name instead of automatically created project-scoped version
@@ -29,19 +30,42 @@ services:
     networks:
       - web
 
+  db:
+    image: postgres:13.2-alpine
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev
+    ports:
+      - 5432:5432
+    networks:
+      - internal
+
   api:
     build:
       context: api
     networks:
       - web
+      - internal
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: dev
-      DOMAIN: 'http://localhost'
+      POSTGRES_HOST: db
+      PORT: 4000
     volumes:
       - ./api:/app
     ports:
       - 9229 # Debugger
+    depends_on:
+      db:
+        condition: service_healthy
     labels:
       traefik.enable: 'true'
       # Path will override other possible localhost/api endpoints
