@@ -9,3 +9,11 @@ services:
       - 9229:9229 # Debugger
     volumes:
       - ./api:/app
+
+  web:
+    build:
+      context: ./web
+    ports:
+      - 3000:3000
+    volumes:
+      - ./web:/app
