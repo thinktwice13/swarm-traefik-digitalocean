@@ -59,6 +59,7 @@ services:
       POSTGRES_DB: dev
       POSTGRES_HOST: db
       PORT: 4000
+      COOKIE_SECRET: 'kiu7654rt654esdfty67ujhgyt54re'
     volumes:
       - ./api:/app
     ports:

@@ -1,4 +1,4 @@
-import { User } from '@lib/users/model'
+import User from '@lib/users/model'
 import { createConnection } from 'typeorm'
 
 /**
@@ -11,8 +11,8 @@ export default async () =>
     synchronize: true,
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
-    database: process.env.NODE_ENV,
-    host: 'db',
+    database: process.env.POSTGRES_DB,
+    host: process.env.POSTGRES_HOST,
     entities: [User],
   })
     .then(() => {
