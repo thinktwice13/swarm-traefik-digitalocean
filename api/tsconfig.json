@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "dist",
+    "strictNullChecks": false,
+    "moduleResolution": "node",
+    "baseUrl": "src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@lib/*": ["lib/*"],
+      "@utils/*": ["utils/*"]
+    },
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["node_modules", "coverage", "dist", "out"],
+  "include": ["src", "**/*.ts", "**/*.tsx", "**/*.js"]
+}
