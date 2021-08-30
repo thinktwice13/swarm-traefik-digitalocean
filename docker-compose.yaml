@@ -55,6 +55,14 @@ services:
       # Runs a custom init script. NOTE: It will be ignored if database already exists. Might need to delete dbdata volume
       - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
 
+  redis:
+    image: redis:6.2.4-alpine
+    healthcheck:
+      test: redis-cli ping
+    command: redis-server --requirepass myRedisPwd
+    networks:
+      - internal
+
   api:
     build:
       context: api
@@ -74,6 +82,8 @@ services:
       - 9229 # Debugger
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     labels:
       traefik.enable: 'true'

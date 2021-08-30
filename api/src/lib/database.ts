@@ -43,7 +43,7 @@ const config = () => {
 export default async () =>
   createConnection(config())
     .then(() => {
-      console.log('Connected to database')
+      console.log('Database ready')
     })
     .catch((error) => {
       console.log(error)
