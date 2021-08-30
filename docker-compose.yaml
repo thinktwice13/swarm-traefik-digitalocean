@@ -11,6 +11,7 @@ networks:
 
 volumes:
   dbdata:
+  pgadmindata:
 
 services:
   traefik:
@@ -120,3 +121,20 @@ services:
     restart: always
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
+
+  pgadmin:
+    restart: unless-stopped
+    image: dpage/pgadmin4:5.3
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@pgadmin.com'
+      PGADMIN_DEFAULT_PASSWORD: 'password'
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - 15432:80
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+    networks:
+      - internal
