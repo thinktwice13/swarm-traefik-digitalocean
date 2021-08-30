@@ -7,7 +7,7 @@ networks:
     # When not external, it makes docker use this name instead of automatically created project-scoped version
     # We need the explicitliy named network for use with "traefik.docker.network" label
     name: web-public
-    external: false # Do ot expect external web network in developmet
+    external: false # Do not expect external web network in developmet
 
 volumes:
   dbdata:
@@ -51,6 +51,8 @@ services:
       - internal
     volumes:
       - dbdata:/var/lib/postgresql/data
+      # Runs a custom init script. NOTE: It will be ignored if database already exists. Might need to delete dbdata volume
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
 
   api:
     build:

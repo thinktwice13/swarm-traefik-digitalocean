@@ -1,4 +1,5 @@
 FROM node:16.7-alpine3.14
+ENV NODE_ENV=development
 EXPOSE 4000
 WORKDIR /app
 COPY package*.json ./
