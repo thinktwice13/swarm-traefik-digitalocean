@@ -9,6 +9,9 @@ networks:
     name: web-public
     external: false # Do ot expect external web network in developmet
 
+volumes:
+  dbdata:
+
 services:
   traefik:
     image: traefik:v2.4
@@ -46,6 +49,8 @@ services:
       - 5432:5432
     networks:
       - internal
+    volumes:
+      - dbdata:/var/lib/postgresql/data
 
   api:
     build:
@@ -99,3 +104,17 @@ services:
     # Eable colorized logs
     tty: true
     stdin_open: false
+
+  portainer:
+    image: portainer/portainer-ce
+    networks:
+      - web
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.portainer.rule=Host(`portainer.localhost`)'
+      - 'traefik.http.routers.portainer.entrypoints=web'
+      - 'traefik.docker.network=web-public'
+      - 'traefik.http.services.portainer.loadbalancer.server.port=9000'
+    restart: always
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
