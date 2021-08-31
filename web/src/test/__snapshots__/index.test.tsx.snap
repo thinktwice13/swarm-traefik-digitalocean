@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sample test Passes 1`] = `
+<DocumentFragment>
+  <div
+    class="chakra-stack css-1b2pnul"
+  >
+    <div
+      class="chakra-stack css-d49qdf"
+    >
+      <h1
+        class="chakra-heading css-0"
+        role="page-title"
+      >
+        Swarm Traefik DigitalOcean
+      </h1>
+      <div
+        class="chakra-stack css-owjkmg"
+      >
+        <p
+          class="chakra-text css-1pkaall"
+        >
+          Docker Swarm microservices deployed on DigitalOcean
+        </p>
+        <div
+          class="css-1hq7shv"
+        >
+          <span
+            class="css-1ehzxp"
+          >
+            nodejs
+          </span>
+          <span
+            class="css-1ehzxp"
+          >
+            nextjs
+          </span>
+          <span
+            class="css-1ehzxp"
+          >
+            typescript
+          </span>
+          <span
+            class="css-1ehzxp"
+          >
+            https
+          </span>
+          <span
+            class="css-1ehzxp"
+          >
+            auth
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="chakra-stack css-owjkmg"
+    >
+      <form>
+        <div
+          class="chakra-stack css-84zodg"
+        >
+          <input
+            class="chakra-input css-0"
+            placeholder="Login/Register"
+            type="text"
+            value=""
+          />
+          <button
+            class="chakra-button css-5c2176"
+            type="submit"
+          >
+            Log In
+          </button>
+        </div>
+      </form>
+      <div
+        class="css-b8u46k"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

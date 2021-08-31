@@ -97,7 +97,7 @@ const Home: NextPage = () => {
       </Head>
 
       <VStack spacing={6} textAlign="center">
-        <Heading as="h1" size="3xl">
+        <Heading as="h1" size="3xl" role="page-title">
           Swarm Traefik DigitalOcean
         </Heading>
 
