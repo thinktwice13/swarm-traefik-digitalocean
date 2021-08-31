@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "src/test",
+    "src/**/__test*",
+    "src/**/__mock*",
+    "src/**/*test.ts",
+    "src/**/*spec.ts"
+  ],
+  "compilerOptions": {
+    "plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
+  }
+}

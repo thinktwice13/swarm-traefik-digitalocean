@@ -4,14 +4,13 @@ import { createConnection } from 'typeorm'
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
 
 // Database config
-
 const config = () => {
   const commonConfig: PostgresConnectionOptions = {
     entities: [User],
     type: 'postgres',
     synchronize: true,
     username: getenv('POSTGRES_USER', 'postgres'),
-    password: getenv('POSTGRES_PASSWORD', 'postgres'),
+    password: getenv('POSTGRES_PASSWORD'),
     /**
      * Attempt connecting to a local port if env var not provided.
      * Can be used to run commands through docker container exposed ports

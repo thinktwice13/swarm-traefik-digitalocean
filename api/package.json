@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "test": "jest --maxWorkers=1 --verbose"
+    "test": "jest --maxWorkers=1 --verbose",
+    "clean": "rm -rf ./dist/* ",
+    "build": "npm run clean && ttsc --project tsconfig.prod.json"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +35,7 @@
     "@types/nodemon": "^1.19.1",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
+    "@zerollup/ts-transform-paths": "^1.7.18",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
@@ -45,6 +48,7 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "tsconfig-paths": "^3.11.0",
+    "ttypescript": "^1.5.12",
     "typescript": "^4.3.5"
   }
 }

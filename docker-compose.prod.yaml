@@ -1,0 +1,105 @@
+# Docker Swarm Secrets and production-specific deployment config
+version: '3.8'
+
+secrets:
+  pg_password:
+    external: true
+  cookie_secret:
+    external: true
+
+volumes:
+  traefik-certificates:
+  dbdata:
+    # TODO Persist across with rexray
+    # external: true
+
+networks:
+  web:
+    name: web-public
+    external: true # NOTE: Use network created outside of this stack
+
+services:
+  traefik:
+    command:
+      - --log.level=ERROR
+      - --providers.docker=true
+      - --providers.docker.swarmmode=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # SSL configuration
+      - --certificatesresolvers.letsencryptresolver.acme.httpchallenge=true
+      - --certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencryptresolver.acme.email=thinktwicecodes@gmail.com
+      - --certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json
+      # Redirect HTTP -> HTTPS
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+    networks:
+      - web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - traefik-certificates:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      labels:
+        traefik.enable: 'true'
+        traefik.http.services.traefik.loadbalancer.server.port: 888 # Required by Swarm (but not used)
+        traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
+        traefik.http.routers.http-catchall.entrypoints: web
+        traefik.http.routers.http-catchall.middlewares: redirect-to-https@docker
+        traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+
+  db:
+    secrets:
+      - pg_password
+    environment:
+      POSTGRES_DB: prod
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  api:
+    image: thinktwice13/stdo-api:v1
+    secrets:
+      - pg_password
+      - cookie_secret
+    environment:
+      POSTGRES_DB: prod
+      POSTGRES_PASSWORD: '{{"{{DOCKER-SECRET:pg_password}}"}}'
+      COOKIE_SECRET: '{{"{{DOCKER-SECRET:cookie_secret}}"}}'
+      DOMAIN: 'https://www.tt13.xyz'
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        traefik.enable: 'true'
+        # Path will override other possible ${DOMAIN}/api endpoints
+        traefik.http.routers.node-api.rule: 'Host(`www.tt13.xyz`) && PathPrefix(`/api`)'
+        traefik.docker.network: web-public
+        traefik.http.services.node-api.loadbalancer.server.port: 4000
+        # Define and apply prefix-strip middleware. Hitting ${DOMAIN}/api will return api service / home route
+        traefik.http.middlewares.node-api-stripprefix.stripprefix.prefixes: /api
+        traefik.http.routers.node-api.middlewares: node-api-stripprefix@docker
+        traefik.http.routers.node-api.entrypoints: websecure
+        traefik.http.routers.node-api.tls.certresolver: letsencryptresolver
+
+  webclient:
+    image: thinktwice13/stdo-webclient:v1
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        traefik.enable: 'true'
+        traefik.http.routers.webclient.rule: Host(`www.tt13.xyz`)
+        # traefik.http.routers.webclient.entrypoints: web
+        traefik.docker.network: web-public
+        traefik.http.services.webclient.loadbalancer.server.port: 3000
+        traefik.http.routers.webclient.entrypoints: websecure
+        traefik.http.routers.webclient.tls.certresolver: letsencryptresolver
+
+  # redis: Nothing production specific about Redis in this example
+  # portainer ot used in production deployment
+  # pgadmin ot used in production deployment

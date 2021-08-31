@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_NAME=swarm-traefik-do
+APP_NAME=stdo
 
 # Droplet name. Droplet number will be appended
 DO_DROPLET_NAME=swarm-traefik-do 

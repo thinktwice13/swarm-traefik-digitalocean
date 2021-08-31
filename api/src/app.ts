@@ -2,6 +2,7 @@ import { authSession } from '@lib/auth/middleware'
 import { usersRouter } from '@lib/users/router'
 import cors from 'cors'
 import express, { Response } from 'express'
+import getenv from 'getenv'
 import { getConnection } from 'typeorm'
 
 const app = express()
@@ -9,7 +10,7 @@ const app = express()
 // Setup CORS first
 app.use(
   cors({
-    origin: process.env.DOMAIN || 'http://localhost',
+    origin: getenv('DOMAIN', 'http://localhost'),
     methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS', 'HEAD'],
     credentials: true,
   }),
