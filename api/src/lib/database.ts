@@ -5,20 +5,21 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 
 // Database config
 const config = () => {
+  const env = getenv('NODE_ENV')
   const commonConfig: PostgresConnectionOptions = {
     entities: [User],
     type: 'postgres',
     synchronize: true,
     username: getenv('POSTGRES_USER', 'postgres'),
-    password: getenv('POSTGRES_PASSWORD'),
+    password: getenv('POSTGRES_PASSWORD', 'postgres'),
     /**
      * Attempt connecting to a local port if env var not provided.
      * Can be used to run commands through docker container exposed ports
      */
-    host: getenv('POSTGRES_HOST', 'localhost'),
+    host: getenv('POSTGRES_HOST', 'localhost'), // Use default for test connections in local dev
   }
 
-  if (['production', 'development'].includes(process.env.NODE_ENV)) {
+  if (['production', 'development'].includes(env)) {
     // If matches environment explicitly set in Docker image
     return {
       ...commonConfig,

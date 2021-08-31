@@ -9,6 +9,7 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react';
+import { axiosClient } from '@utils/axios-client';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
@@ -26,16 +27,9 @@ const Home: NextPage = () => {
   const login = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    fetch('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ passphrase: input }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient
+      .post('/api/auth/login', { passphrase: input })
+      .then(({ data }) => {
         setLoggeInUser(data.data);
         setInput('');
 
@@ -47,13 +41,8 @@ const Home: NextPage = () => {
   const logout = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    fetch('/api/auth/logout', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
+    axiosClient
+      .post('/api/auth/logout')
       .then(() => {
         setLoggeInUser(undefined);
       })
@@ -61,15 +50,8 @@ const Home: NextPage = () => {
   };
 
   const getAllUsers = () => {
-    fetch('/api/users', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient('/api/users')
+      .then(({ data }) => {
         setUsers(data.data);
       })
       .catch(console.error);
@@ -77,9 +59,8 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     getAllUsers();
-    fetch('/api/user')
-      .then((res) => res.json())
-      .then((data) => {
+    axiosClient('/api/user')
+      .then(({ data }) => {
         setLoggeInUser(data.data);
       })
       .catch(console.error);

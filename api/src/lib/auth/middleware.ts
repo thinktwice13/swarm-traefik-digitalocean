@@ -1,5 +1,5 @@
 import User from '@lib/users/model'
-import redisClient from '@utils/redis-client'
+import { redisClient } from '@utils/redis-client'
 import connectRedis from 'connect-redis'
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import expressSession, { Store } from 'express-session'
@@ -15,7 +15,7 @@ declare module 'express-session' {
 const sessionStore = () => {
   let store: Store
 
-  if (process.env.NODE_ENV === 'production') {
+  if (getenv('NODE_ENV') === 'production') {
     const RedisStore = connectRedis(expressSession)
     store = new RedisStore({ client: redisClient })
   }

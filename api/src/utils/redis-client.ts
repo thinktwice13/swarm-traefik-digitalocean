@@ -21,4 +21,4 @@ client.on('error', function () {
   process.exit(1)
 })
 
-export default client
+export { client as redisClient }

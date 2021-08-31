@@ -1,4 +1,5 @@
 import database from '@lib/database'
+import getenv from 'getenv'
 import http from 'http'
 import 'reflect-metadata'
 import { getConnection } from 'typeorm'
@@ -8,7 +9,7 @@ const start = async () => {
   // Attempt db connection as early as possible
   database()
 
-  const port = parseInt(process.env.PORT)
+  const port = getenv.int('PORT')
 
   const shutdown = async () => {
     server.close(function onServerClosed(err) {

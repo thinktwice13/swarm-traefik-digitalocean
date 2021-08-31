@@ -44,6 +44,11 @@ services:
       - traefik-certificates:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
       labels:
         traefik.enable: 'true'
         traefik.http.services.traefik.loadbalancer.server.port: 888 # Required by Swarm (but not used)
@@ -88,6 +93,8 @@ services:
 
   webclient:
     image: thinktwice13/stdo-webclient:v1
+    environment:
+      NEXT_PUBLIC_DOMAIN: 'https://www.tt13.xyz'
     deploy:
       mode: replicated
       replicas: 1
