@@ -28,12 +28,17 @@ const Home: NextPage = () => {
     e.preventDefault();
 
     axiosClient
-      .post('/api/auth/login', { passphrase: input })
-      .then(({ data }) => {
-        setLoggeInUser(data.data);
-        setInput('');
+      .get('/api/csrf')
+      .then(({ data: csrfToken }) => {
+        axiosClient
+          .post('/api/auth/login', { passphrase: input, _csrf: csrfToken })
+          .then(({ data }) => {
+            setLoggeInUser(data.data);
+            setInput('');
 
-        if (!users?.some((u) => u.id === data.data.id)) getAllUsers();
+            if (!users?.some((u) => u.id === data.data.id)) getAllUsers();
+          })
+          .catch(console.error);
       })
       .catch(console.error);
   };
@@ -42,9 +47,14 @@ const Home: NextPage = () => {
     e.preventDefault();
 
     axiosClient
-      .post('/api/auth/logout')
-      .then(() => {
-        setLoggeInUser(undefined);
+      .get('/api/csrf')
+      .then(({ data: csrfToken }) => {
+        axiosClient
+          .post('/api/auth/logout', { _csrf: csrfToken })
+          .then(() => {
+            setLoggeInUser(undefined);
+          })
+          .catch(console.error);
       })
       .catch(console.error);
   };
@@ -122,7 +132,9 @@ const Home: NextPage = () => {
                 }}
               />
             )}
-            <Button type="submit">{loggedInUser ? 'Log Out' : 'Log In'}</Button>
+            <Button disabled={!loggedInUser && !input} type="submit">
+              {loggedInUser ? 'Log Out' : 'Log In'}
+            </Button>
           </HStack>
         </form>
 
