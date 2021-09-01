@@ -1,0 +1,41 @@
+name: Deploy API Service
+
+on:
+  push:
+    # paths:
+    #   - 'api/**'
+    #   - 'docker-compose.yaml'
+    branches:
+      - main
+
+env:
+  # APP_NAME: ${{ github.event.repository.name }}
+  APP_NAME: stdo
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Build and push new API docker image
+      # - run: docker build -t thinktwice13/$APP_NAME-api:v1 --build-arg CREATED_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" --build-arg SOURCE_COMMIT="$(git rev-parse --short HEAD)" ./api
+      # - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # - run: docker push thinktwice13/$APP_NAME-api:v1
+
+      # Setup keys for the DigitalOcean ssh connection
+      # Read https://github.com/kielabokkie/ssh-key-and-known-hosts-action
+      - name: Setup SSH keys
+        uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+        with:
+          ssh-private-key: ${{ secrets.DO_SSH_PRIVATE }}
+          ssh-host: ${{ secrets.DO_HOST }}
+
+      # Update API service only
+      - name: Deploy to swarm
+        # 202107 docker stack deploy not working for updates. Uses old image
+        # run: docker -H ssh://${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} stack deploy ${{ env.APP_NAME }} -c docker-compose.yaml
+        run: docker -H ssh://${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} service update --force --image thinktwice13/${{ env.APP_NAME }}-api:v1 ${{ env.APP_NAME }}_api
