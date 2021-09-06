@@ -5,11 +5,13 @@ import cors from 'cors'
 import csurf from 'csurf'
 import express, { Request, Response } from 'express'
 import getenv from 'getenv'
+import helmet from 'helmet'
 import { getConnection } from 'typeorm'
 
 const app = express()
 
 app.set('trust proxy', true)
+app.use(helmet())
 app.use(
   cors({
     origin: getenv('DOMAIN'),

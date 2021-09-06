@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "getenv": "^1.0.0",
+    "helmet": "^4.6.0",
     "ioredis": "^4.27.9",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
