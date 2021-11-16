@@ -84,7 +84,7 @@ You can do this section by sshing into the droplet or creating a new [Docker Con
   ```
   docker network create -d overlay web-public
   ```
-- If you created more than one node, [join the worker nodes to the manager](https://docs.docker.com/engine/swarm/join-nodes/)
+- If more than one node created, [join the worker nodes to the manager](https://docs.docker.com/engine/swarm/join-nodes/)
   ```
   TODO
   ```
@@ -108,7 +108,7 @@ Docker CLI looks for `DOCKER_HOST` variable. If not set, it uses `unix:///var/ru
 
   # DigitalOcean manager droplet user and host (public ip or domain) for ssh
   DO_HOST
-  DO_USER (Usually root)
+  DO_USER (root)
 
   # SSH private key used for the ssh connection
   DO_SSH_PRIVATE

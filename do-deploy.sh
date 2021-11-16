@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./config.sh
+source ./do-config.sh
 
 MANAGER_PUBLIC_IP=`doctl compute droplet list | awk '/'"$DO_DROPLET_NAME-1"'/ { print $3 }'`
 

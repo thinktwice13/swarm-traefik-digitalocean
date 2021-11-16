@@ -2,7 +2,7 @@
 
 # This script will create droplets on DigitalOcean using values in config.sh
 # Requires doctl: https://docs.digitalocean.com/reference/doctl/how-to/install/
-# Requires IDs of any of the ssh keys added to your DigitalOcean account as comma-separated argument. You can see all the added ssh keys with `doctl compute ssk-key ls`
+# Requires IDs of any of the ssh keys added to your DigitalOcean account as comma-separated argument. You can see all the added ssh keys with `doctl compute ssh-key ls`
 
 # Check if SSH key provided
 if [ $# -eq 0 ]; then
@@ -18,7 +18,7 @@ if ! type "doctl" > /dev/null; then
 fi
 
 # Read config
-source config.sh
+source ./do-config.sh
 
 # Creates droplets
 init_node () {
