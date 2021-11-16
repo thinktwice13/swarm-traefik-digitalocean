@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^27.0.2",
     "connect-redis": "^6.0.0",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
@@ -21,10 +21,10 @@
     "express-session": "^1.17.2",
     "getenv": "^1.0.0",
     "helmet": "^4.6.0",
-    "ioredis": "^4.27.9",
+    "ioredis": "^4.27.11",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.37"
+    "typeorm": "^0.2.38"
   },
   "devDependencies": {
     "@types/connect-redis": "^0.0.17",
