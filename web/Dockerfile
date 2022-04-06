@@ -1,5 +1,5 @@
 # base image with dev deps
-FROM node:gallium-alpine as base
+FROM node:16-alpine3.15 as base
 LABEL org.opencontainers.image.authors=thinktwice13
 LABEL org.opencontainers.image.title=stdo
 LABEL org.opencontainers.image.created=$CREATED_DATE
